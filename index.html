@@ -5,21 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dictionary App</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
 <body>
     <div class="container">
-        <h1>Dictionary App</h1>
+        <h1>English Dictionary</h1>
         <div class="search-box">
             <input type="text" id="search-input" placeholder="Enter a word...">
             <button onclick="searchWord()">Search</button>
         </div>
         <div id="result">
-            <h2 class="word"></h2>
-            <p class="phonetics"></p>
-            <p><strong>Meaning:</strong> <span class="meaning"></span></p>
-            <p><strong>Example:</strong> <span class="example"></span></p>
-            <p><strong>Synonyms:</strong> <span class="synonyms"></span></p>
-            <button id="play-audio">🔊 Pronounce</button>
+          <div class="word-class">
+            <h2 class="word"><span class="phonetics"></span></h2>
+            <button id="play-audio" class="fas fa-volume-up"></button>
+          </div>
+            <p><strong>Meaning</strong> <span class="meaning"></span></p>
+            <p><strong>Example</strong> <span class="example"></span></p>
+            <p><strong>Synonyms</strong> <span class="synonyms"></span></p>
+            
         </div>
     </div>
     <script src="index.js"></script>

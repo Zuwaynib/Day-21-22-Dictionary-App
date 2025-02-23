@@ -1,19 +1,21 @@
 const API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 
+let wordElement = document.querySelector(".word");
+let phoneticsElement = document.querySelector(".word span");
+let meaningElement = document.querySelector(".meaning");
+let exampleElement = document.querySelector(".example");
+let synonymsContainer = document.querySelector(".synonyms");
+
 function searchWord() {
-    let word = document.getElementById("search-input").value.trim();
-    if (!word) {
+    let searchInput = document.getElementById("search-input").value.trim();
+    if (!searchInput) {
         alert("Please enter a word!");
         return;
     }
-
-    fetch(API_URL + word)
+        fetch(API_URL + searchInput)
         .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            displayData(result, word);
-        })
-        .catch(() => alert("Error fetching data!"));
+        .then(result => displayData(result, searchInput))
+        .catch(() => alert("Error fetching data!"));  
 }
 
 function findFirstAvailableExample(meanings) {
@@ -24,7 +26,7 @@ function findFirstAvailableExample(meanings) {
             }
         }
     }
-    return "No example found, try using it in a sentence!";
+    return "No example available";
 }
 
 function findFirstAvailableSynonyms(meanings) {
@@ -36,9 +38,9 @@ function findFirstAvailableSynonyms(meanings) {
     return ["No synonyms available"];
 }
 
-function displayData(result, word) {
+function displayData(result, searchWord) {
     if (result.title) {
-        alert(`No results found for "${word}". Try another word.`);
+        alert(`No results found for "${searchWord}". Try another word.`);
         return;
     }
 
@@ -48,20 +50,21 @@ function displayData(result, word) {
     let firstMeaning = meanings[0] || {};
     let definition = firstMeaning.definitions?.[0]?.definition || "No definition available";
 
-    // Improved Example & Synonym Extraction
-    let example = findFirstAvailableExample(meanings);
-    let synonyms = findFirstAvailableSynonyms(meanings);
+    // Get Example & Synonyms
+    let exampleText = findFirstAvailableExample(meanings);
+    let synonymsList = findFirstAvailableSynonyms(meanings);
 
-    document.querySelector(".word").innerText = wordData.word;
-    document.querySelector(".phonetics").innerText = wordData.phonetics?.[0]?.text || "";
-    document.querySelector(".meaning").innerText = definition;
-    document.querySelector(".example").innerText = example;
-    
-    let synonymsContainer = document.querySelector(".synonyms");
+    // Update DOM Elements
+    // wordElement.textContent = wordData.word;
+    phoneticsElement.textContent = wordData.phonetics?.[0]?.text || "";
+    meaningElement.textContent = definition;
+    exampleElement.textContent = exampleText; // Ensures it's always displayed
+
+    // Update Synonyms
     synonymsContainer.innerHTML = "";
-    synonyms.forEach(synonym => {
+    synonymsList.forEach(synonym => {
         let span = document.createElement("span");
-        span.innerText = synonym;
+        span.textContent = synonym;
         span.onclick = () => {
             document.getElementById("search-input").value = synonym;
             searchWord();
@@ -69,6 +72,7 @@ function displayData(result, word) {
         synonymsContainer.appendChild(span);
     });
 
+    // Handle Audio
     let audioSrc = wordData.phonetics.find(p => p.audio)?.audio || "";
     let audioButton = document.getElementById("play-audio");
 
